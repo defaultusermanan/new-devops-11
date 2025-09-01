@@ -1,0 +1,40 @@
+```yaml
+name: CodeQL Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    # The branches for which pull request events will trigger the workflow.
+    branches:
+      - main
+  schedule:
+    - cron: '0 1 * * 0' # Weekly scan at 1 AM UTC on Sunday
+
+jobs:
+  codeql:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: java
+
+      - name: Build project
+        run: |
+          ./gradlew clean build # Adjust this build command based on your build system
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+```
